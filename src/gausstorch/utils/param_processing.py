@@ -5,19 +5,6 @@ from copy import deepcopy
 from gausstorch.constants import SYST_VARS_KEYS_WITH_BIASES
 
 
-def separate_syst_other(init_pars: dict):
-    # separate contents of dict between parameters needing grad and not needing grad
-    params_syst = nn.ParameterDict({
-        key: nn.Parameter(init_pars[key], requires_grad=True)
-        for key in SYST_VARS_KEYS_WITH_BIASES
-    })
-    params_others = {
-        key: init_pars[key]
-        for key in ['t_i']
-    }
-    return params_syst, params_others
-
-
 def rescale_law(unscaled_val: torch.float64, par_key: str, R: torch.float64):
     """
 

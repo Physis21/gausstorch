@@ -6,7 +6,7 @@ from math import prod, factorial
 import matplotlib.pyplot as plt
 
 from gausstorch.utils.operations import torch_block, cholesky_inverse_det, truncate_disp, truncate_sigma
-from gausstorch.utils.display import setup_tex, plot_evolution_N
+from gausstorch.utils.display import setup_tex, plot_evolution_N, plot_evolution_fock, fock_states_to_str_list
 from gausstorch.utils.bcolors import bcolors
 from gausstorch.utils.loop_hafnian_torch import loop_hafnian
 from gausstorch.constants import SYST_VARS_KEYS_WITH_BIASES
@@ -313,7 +313,7 @@ class Qsyst(nn.Module):
 
     def evolution_N(
             self,
-            theta_key="eA",
+            theta_key: str = "eA",
             x_val=1,
             x_min=0,
             x_max=1,
@@ -360,7 +360,6 @@ class Qsyst(nn.Module):
         # plot means
         tspan_renormalized = tspan * torch.mean(self.syst_vars.k_ext)  # renorm by kappa average
         if compute_plot:
-            setup_tex()
             tspan_np = tspan_renormalized.detach().numpy()
             means_np = means.detach().numpy()
             fig, ax = plot_evolution_N(tspan_np, means_np, width_ratio=0.48,
@@ -376,3 +375,60 @@ class Qsyst(nn.Module):
                 return tspan, means
             else:
                 return means
+
+    def evolution_fock(
+            self,
+            fock_combs_per_mode_comb: dict = None,
+            theta_key: str = "eA",
+            x_val=1,  # input, of value between 0 and 1
+            x_min=0,
+            x_max=1,
+            encode_phase: bool = False,
+            res: int = 1_000,
+            compute_plot: bool = True,
+            show_plot: bool = True,
+            inference_mode: bool = True,
+            return_vals: bool = False,
+    ):
+        torch.set_num_threads(1)
+
+        torch.inference_mode(inference_mode)
+        num_probs = sum([len(fock_combinations) for fock_combinations in fock_combs_per_mode_comb.values()])
+
+        # encode the input x into theta_0
+        theta_0, x_mask_shape = self.return_theta_xmask(theta_key)
+        x_mask = x_val * torch.ones(x_mask_shape, dtype=torch.complex128)
+        theta_encoded = self.encode_theta(theta_0=theta_0, x_mask=x_mask, x_min=x_min, x_max=x_max,
+                                          encode_phase=encode_phase)
+        tspan = torch.linspace(0, self.other_pars["t_i"], res)
+        probs = torch.zeros((res, num_probs))
+        # perform the eigenvalue decomposition only once, then use to compute alpha and sigma at all times t from tspan.
+        lambda_F, U, Uinv, K_int, K_ext = self.alpha_sigma_evolution_part_1(theta_key=theta_key,
+                                                                            theta_encoded=theta_encoded)
+        for i, t in enumerate(tspan):
+            alpha_t, sigma_t = self.alpha_sigma_evolution_part_2(
+                theta_key=theta_key, theta_encoded=theta_encoded, t=t, alpha_i=self.alpha0, sigma_i=self.sigma0,
+                lambda_F=lambda_F, U=U, Uinv=Uinv, K_int=K_int, K_ext=K_ext)
+            prob_counter = 0
+            for mode_comb, fock_combinations in fock_combs_per_mode_comb.items():
+                for fock_combination in fock_combinations:
+                    p = self.prob_gbs_partial_trace(alpha_t, sigma_t, fock_combination, mode_comb)
+                    probs[i, prob_counter] = p
+                    prob_counter += 1
+
+        # plot probs
+        if compute_plot:
+            prob_means = torch.mean(probs, dim=0).tolist()
+            tspan_renormalized = tspan * torch.mean(self.syst_vars.k_ext)  # renorm by kappa average
+            tspan_np = tspan_renormalized.detach().numpy()
+            probs_np = probs.detach().numpy()
+            labels = fock_states_to_str_list(fock_combs_per_mode_comb)
+            labels = [prob_notation + f"\n$avg={avg:.4e}$" for prob_notation, avg in zip(labels, prob_means)]
+            if len(labels) == 1:
+                labels = labels[0]
+            fig, ax = plot_evolution_fock(tspan=tspan_np, probs=probs_np, labels=labels,
+                                          xlabel=r'$time \times \kappa$', ylabel='Probability')
+            if show_plot:
+                plt.show()
+        if return_vals:
+            return probs
