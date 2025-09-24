@@ -14,7 +14,7 @@ from gausstorch.constants import SYST_VARS_KEYS_WITH_BIASES
 torch.set_default_dtype(torch.float64)
 
 
-def init_par_default(M):
+def init_pars_default(M):
     g_shape = M * (M - 1) // 2
     eA = M * 1e5
     output = {
@@ -423,7 +423,7 @@ class Qsyst(nn.Module):
             tspan_np = tspan_renormalized.detach().numpy()
             probs_np = probs.detach().numpy()
             labels = fock_states_to_str_list(fock_combs_per_mode_comb)
-            labels = [prob_notation + f"\n$avg={avg:.4e}$" for prob_notation, avg in zip(labels, prob_means)]
+            labels = [prob_notation + rf"\n avg$={avg:.4e}$" for prob_notation, avg in zip(labels, prob_means)]
             if len(labels) == 1:
                 labels = labels[0]
             fig, ax = plot_evolution_fock(tspan=tspan_np, probs=probs_np, labels=labels,

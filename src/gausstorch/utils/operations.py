@@ -31,7 +31,23 @@ def cholesky_inverse_det(M):
         # return torch.inverse(M), torch.det(M)
 
 
-# region Folded matrix slicing and tracing
+# region Folded manipulation of gaussian moments
+
+def moments_to_quad_moments(alpha, sigma):
+    """
+    transform ani&crea moments to quadrature moments
+    :param alpha: 2M * 1 tensor
+    :param sigma: 2M*2M tensor
+    :return: alpha and sigma of quadratures
+    """
+    M = alpha.shape[0] // 2
+    gamma_dag = (1 / np.sqrt(2)) * torch_block(
+        torch.eye(M), torch.eye(M), -1j * torch.eye(M), 1j * torch.eye(M)
+    )  # also inverse of gamma
+    gamma = gamma_dag.t().conj()
+    alpha_r = gamma_dag @ alpha
+    sigma_r = gamma_dag @ sigma @ gamma
+    return alpha_r, sigma_r
 
 def truncate_sigma(sigma, modes_kept, M):
     """
@@ -60,14 +76,14 @@ def truncate_sigma(sigma, modes_kept, M):
     return sigma_truncated
 
 
-def truncate_disp(disp, kept_mode_ind, M):
+def truncate_disp(disp, modes_kept, M):
     """
     disp: full displacement vector
     modes_kept: modes to keep, truncate the other ones
     M: total number of modes
     """
-    rows = kept_mode_ind  # 1d list of rows to keep
-    M_kept = len(kept_mode_ind)
+    rows = modes_kept  # 1d list of rows to keep
+    M_kept = len(modes_kept)
     disp_truncated = torch.empty((2 * len(rows), 1), dtype=torch.complex128)
     for i, row in enumerate(rows):
         disp_truncated[i, 0] = torch.select(
@@ -78,4 +94,32 @@ def truncate_disp(disp, kept_mode_ind, M):
         )
     return disp_truncated
 
-# endregion Folded matrix slicing and tracing
+# endregion Folded manipulation of gaussian moments
+
+# region Folded Wigner function
+
+def wigner(d, alpha, sigma):
+    """
+    Use quadrature 1st and 2nd moments, not creation and annihilation operators
+    :param d: 2M * 1 tensor
+    :param alpha: 2M * 1 tensor
+    :param sigma: 2M*2M tensor
+    :return: wigner function at d coordinate
+    """
+    M = alpha.shape[0] // 2
+    return torch.exp(-0.5 * (alpha - d).t() @ torch.linalg.inv(sigma) @ (alpha - d)) / (
+            ((2 * torch.pi) ** M) * torch.sqrt(torch.linalg.det(sigma)))
+
+
+def wigner_2d_map(alpha, sigma, xvec: torch.linspace(-5, 5, 50), yvec: torch.linspace(-5, 5, 50)):
+    assert alpha.shape == torch.Size([2, 1]) and sigma.shape == torch.Size([2, 2])
+    assert len(xvec.shape) == 1 and len(yvec.shape) == 1
+    W = torch.empty((xvec.shape[0], yvec.shape[0]))
+    for i_x, x in enumerate(xvec):
+        for i_y, y in enumerate(yvec):
+            d = torch.tensor([[x], [y]])
+            w = wigner(d, alpha, sigma)
+            W[i_x, i_y] = w.real
+    return W
+
+# endregion Folded Wigner function
