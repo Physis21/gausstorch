@@ -37,6 +37,29 @@ def setup_tex(usetex=True):
     })
 
 
+# region Folded print info on model
+def print_state_dict(state_dict: dict):
+    print('state dict:')
+    for key, values in state_dict.items():
+        print(f'{key}: {values}')
+
+
+def print_other_pars(other_pars: dict):
+    print('other pars:')
+    for key, values in other_pars.items():
+        print(f'{key}: {values}')
+
+
+def print_model_parameters(named_parameters: dict):
+    print(f'model parameters:')
+    for name, param in named_parameters:
+        if param.requires_grad:
+            print(f'{name} = {param.data}')
+
+
+# endregion Folded print info on model
+
+
 # region Plotting Wigner
 
 
