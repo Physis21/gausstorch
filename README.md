@@ -2,7 +2,7 @@
 
 ## Requirements & installing
 
-- Have Python **version 3.12.1** installed on your computer
+- Have Python **version 3.12.1** installed on your computer. [Here](https://www.python.org/downloads/release/python-3121/) is a link.
 - First download the GitLab code
 - From the command line, move into the root folder of the downloaded code
 
@@ -35,6 +35,7 @@ pip install --editable .  # install the src package
 ## READ THE TUTORIAL
 Go to [tutorials/qsyst.ipynb](tutorials/qsyst.ipynb) to see how the **Qsyst** class is used to model coupled bosonic modes.
 
+All of the calculations performed in **Qsyst** are detailed in my thesis. I put the relevant sections in the Git repository, [here](<thesis section5-3 + Hamiltonian + Langevin.pdf>).
 
 ## Structure of src/gausstorch
 
@@ -50,3 +51,7 @@ Go to [tutorials/qsyst.ipynb](tutorials/qsyst.ipynb) to see how the **Qsyst** cl
   - `./src/gausstorch/utils/operations.py` contains functions frequently applied to PyTorch tensors.
     - Example: cholesky inverse for fast inversion of symmetric matrices
   - `./src/gausstorch/utils/param_processing.py` contains functions used to process **Qsyst** parameters.
+
+## Contact
+
+If you have any questions, ask me a question at [juliendudas@gmail.com](juliendudas@gmail.com)
