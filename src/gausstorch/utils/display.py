@@ -4,7 +4,8 @@ from matplotlib.ticker import FormatStrFormatter
 import numpy as np
 import torch
 
-from gausstorch.utils.operations import truncate_disp, truncate_sigma, moments_to_quad_moments, wigner_2d_map
+from gausstorch.utils.operations import truncate_alpha, truncate_sigma, moments_to_quad_moments, wigner_2d_map, \
+    keep_quads_in_alpha_r, keep_quads_in_sigma_r
 
 # Parameters to automatically size the figure with respect to an article/report.
 # Here I set the text width of my thesis, but you should write in the textwidth of your own article/report.
@@ -37,28 +38,22 @@ def setup_tex(usetex=True):
 
 
 # region Plotting Wigner
-def quad_name(Nosc, index):
-    if index < Nosc:
-        name = f'X_{chr(97 + index)}'
-    else:
-        name = f'P_{chr(97 + index - Nosc)}'
-    return name
 
 
-def plot_wigner(ax: plt.axes, alpha, sigma, kept_x1: int, kept_x2: int):
+def plot_wigner(ax: plt.axes, alpha, sigma, quad1_key: str, quad2_key: str):
     with torch.no_grad():
-        Nosc = alpha.shape[0] // 2
+        M = alpha.shape[0] // 2
         alpha_r, sigma_r = moments_to_quad_moments(alpha, sigma)
-        alpha_r_x1_x2 = truncate_disp(alpha_r, [kept_x1, kept_x2])
-        sigma_r_x1_x2 = truncate_sigma(sigma_r, [kept_x1, kept_x2])
+        alpha_r_x1_x2 = keep_quads_in_alpha_r(alpha_r, quad1_key, quad2_key)
+        sigma_r_x1_x2 = keep_quads_in_sigma_r(sigma_r, quad1_key, quad2_key)
         xvec = torch.linspace(-3, 3, 100)
         yvec = torch.linspace(-3, 3, 100)
         W = wigner_2d_map(alpha_r_x1_x2, sigma_r_x1_x2, xvec, yvec)
         # plot
-        fs = 15
         c = ax.pcolormesh(xvec, yvec, W)
-        ax.set_xlabel('$' + quad_name(Nosc, kept_x1) + '$', fontsize=fs)
-        ax.set_ylabel('$' + quad_name(Nosc, kept_x2) + '$', fontsize=fs)
+        ax.set_xlabel(quad1_key, fontsize=FS)
+        ax.set_ylabel(quad2_key, fontsize=FS)
+        ax.set_aspect('equal')
     return c
 
 
@@ -68,7 +63,7 @@ def plot_wigner(ax: plt.axes, alpha, sigma, kept_x1: int, kept_x2: int):
 # region Plotting dynamics
 
 
-def plot_evolution_N(tspan: np.ndarray, means: np.ndarray, width_ratio=0.8,
+def plot_evolution_N(tspan: np.ndarray, means: np.ndarray, width_ratio=0.48,
                      xlabel="time (ns)", ylabel=r"$\boldsymbol{N}$", yscale='linear'):
     setup_tex()
     M = means.shape[1]
@@ -92,8 +87,8 @@ def plot_evolution_N(tspan: np.ndarray, means: np.ndarray, width_ratio=0.8,
     return fig, ax
 
 
-def plot_evolution_fock(tspan: np.ndarray, probs: np.ndarray, labels: list, width_ratio=0.8,
-                        xlabel="time (ns)", ylabel=r"$\boldsymbol{N}$", yscale='linear'):
+def plot_evolution_fock(tspan: np.ndarray, probs: np.ndarray, labels: list, width_ratio=0.48,
+                        xlabel="time (ns)", ylabel=r"Probability", yscale='linear'):
     setup_tex()
     M = probs.shape[1]
     width = width_ratio * TEXTWIDTH_INCH

@@ -5,7 +5,7 @@ from copy import deepcopy
 from math import prod, factorial
 import matplotlib.pyplot as plt
 
-from gausstorch.utils.operations import torch_block, cholesky_inverse_det, truncate_disp, truncate_sigma
+from gausstorch.utils.operations import torch_block, cholesky_inverse_det, truncate_alpha, truncate_sigma
 from gausstorch.utils.display import setup_tex, plot_evolution_N, plot_evolution_fock, fock_states_to_str_list
 from gausstorch.utils.bcolors import bcolors
 from gausstorch.utils.loop_hafnian_torch import loop_hafnian
@@ -284,8 +284,8 @@ class Qsyst(nn.Module):
         This means you trace out mode 1, and compute the probability of
         measuring 2 photons in mode 0, and 4 photons in mode 2.
         """
-        sigma_new = truncate_sigma(sigma, modes_kept, self.M)
-        alpha_new = truncate_disp(alpha, modes_kept, self.M)
+        sigma_new = truncate_sigma(sigma, modes_kept)
+        alpha_new = truncate_alpha(alpha, modes_kept)
 
         nn2 = n + n
         M = len(modes_kept)
@@ -423,11 +423,12 @@ class Qsyst(nn.Module):
             tspan_np = tspan_renormalized.detach().numpy()
             probs_np = probs.detach().numpy()
             labels = fock_states_to_str_list(fock_combs_per_mode_comb)
-            labels = [prob_notation + rf"\n avg$={avg:.4e}$" for prob_notation, avg in zip(labels, prob_means)]
+            # labels = [prob_notation + rf"\n avg$={avg:.4e}$" for prob_notation, avg in zip(labels, prob_means)]
+            labels = [prob_notation for prob_notation, avg in zip(labels, prob_means)]
             if len(labels) == 1:
                 labels = labels[0]
-            fig, ax = plot_evolution_fock(tspan=tspan_np, probs=probs_np, labels=labels,
-                                          xlabel=r'$time \times \kappa$', ylabel='Probability')
+            fig, ax = plot_evolution_fock(tspan=tspan_np, probs=probs_np, labels=labels, width_ratio=0.48,
+                                          xlabel=r'time $\times \kappa$', ylabel='Probability')
             if show_plot:
                 plt.show()
         if return_vals:
