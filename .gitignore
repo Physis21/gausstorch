@@ -1,3 +1,6 @@
 /.venv/
 /.idea/
 /local/
+/src/gausstorch/__pycache__/
+/src/gausstorch/libs/__pycache__/
+/src/gausstorch/utils/__pycache__/
