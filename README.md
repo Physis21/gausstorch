@@ -45,7 +45,7 @@ All of the calculations performed in **Qsyst** are detailed in my thesis. I put 
   - On initialization, an instance of **Qsyst** requires an **init_pars** argument, which specifies the drive, coupling and dissipation parameters within the modes.
   - Learning models using Gaussian dynamics should be child classes of **Qsyst**.
 - `./src/gausstorch/utils`: very short and specific functions used throughout functions in `./src/gausstorch/libs`
-  - `./src/gausstorch/utils/_loop_hafnian_subroutines.py` and `loop_hafnian.py`are used to compute **loop hafnians**. The functions are adapted to PyTorch from the github repository <https://github.com/jakeffbulmer/gbs> , made by _Jacob F.F.Bulmer_ for the paper "The boundary for quantum advantage in Gaussian boson sampling".
+  - `./src/gausstorch/utils/_loop_hafnian_subroutines.py` and `loop_hafnian.py` are used to compute **loop hafnians**. The functions are adapted to PyTorch from the github repository <https://github.com/jakeffbulmer/gbs> , made by _Jacob F.F.Bulmer_ for the paper "The boundary for quantum advantage in Gaussian boson sampling".
   - `./src/gausstorch/utils/bcolors.py` contains the **bcolors** class used to color command line prints.
   - `./src/gausstorch/utils/display.py` contains functions used to either format strings/prints, or plot data.
   - `./src/gausstorch/utils/operations.py` contains functions frequently applied to PyTorch tensors.
