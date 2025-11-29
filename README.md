@@ -1,4 +1,15 @@
-# Source repository for 'gausstorch', a package allowing the simulation of coupled bosonic modes, with PyTorch
+# Source repository for 'gausstorch', a package allowing the simulation of coupled bosonic modes in the Gaussian regime, with PyTorch
+
+## About this repository
+
+- This repository is an overhauled (properly documented and with better coding practices) version of my PhD code, used to **simulate the dynamics of coupled bosonic modes in PyTorch**
+- My PhD thesis is available on HAL [here](https://theses.hal.science/tel-05383369)
+- An instance of the `Qsyst` class in `src/gausstorch/libs/qsyst.py` contains the drive, detuning and coupling parameters between a certain number $M$ of coupled Gaussian modes
+  - It will be used to model the dynamics of such a system using the `alpha_sigma_evolution()` methods, and compute the Fock state occupation probabilities (with Gaussian boson sampling) using the `prob_gbs()` method
+- During my PhD I used this formalism to train the physical parameters in order to solve _classical_ machine learning tasks
+  - Due to time constraints, I have not added the modules allowing for solving of classical machine learning tasks, but rather only the PyTorch package allowing to train the physical parameters
+  - If you wish to see how I built learning models on top of the `Qsyst` class, you can download the Zenodo repository for my article _"Training the parametric interactions in an analog bosonic quantum neural network with Fock basis measurement"_ [here](https://zenodo.org/records/15856611)
+- This is an overhauled version with only the minimum sufficient classes and functions, **meant for future PhD students to build up on**
 
 ## Requirements & installing
 
