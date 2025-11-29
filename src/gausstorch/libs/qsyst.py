@@ -73,7 +73,7 @@ class Qsyst(nn.Module):
         other_pars = {key: self.init_pars[key] for key in ['t_i']}
         return other_pars
 
-    def create_coupling_matrices(self, M: int, detuning: torch.float64, g_cplx: torch.complex128,
+    def create_coupling_matrices(self, detuning: torch.float64, g_cplx: torch.complex128,
                                  gs_cplx: torch.complex128):
         G = torch.diag(detuning).type(torch.complex128)
         i, j = 0, 1
@@ -81,17 +81,17 @@ class Qsyst(nn.Module):
             G[i, j] = g_
             G[j, i] = torch.conj(g_)
             j += 1
-            if j == M:
+            if j == self.M:
                 i += 1
                 j = i + 1
 
-        Gs = torch.zeros((M, M), dtype=torch.complex128)
+        Gs = torch.zeros((self.M, self.M), dtype=torch.complex128)
         i, j = 0, 1
         for gs_ in gs_cplx:
             Gs[i, j] = gs_ / 2
             Gs[j, i] = gs_ / 2
             j += 1
-            if j == M:
+            if j == self.M:
                 i += 1
                 j = i + 1
         L0 = -1j * torch_block(G, 2 * Gs, -2 * Gs.conj().t(), -G.t())
@@ -138,7 +138,6 @@ class Qsyst(nn.Module):
         """
         Diagonalize the coupling matrix with dissipations.
         """
-        M = self.M
         detuning = self.syst_vars.detuning
         g_cplx = self.syst_vars.g_real + 1j * self.syst_vars.g_imag
         gs_cplx = self.syst_vars.gs_real + 1j * self.syst_vars.gs_imag
@@ -149,7 +148,7 @@ class Qsyst(nn.Module):
         elif theta_key == "gs":
             gs_cplx = theta_encoded
 
-        L0 = self.create_coupling_matrices(M=M, detuning=detuning, g_cplx=g_cplx, gs_cplx=gs_cplx)
+        L0 = self.create_coupling_matrices(detuning=detuning, g_cplx=g_cplx, gs_cplx=gs_cplx)
 
         K_ext = torch.diag(torch.cat((self.syst_vars.k_ext, self.syst_vars.k_ext), dim=0)).type(torch.complex128)
         K_int = torch.diag(torch.cat((self.syst_vars.k_int, self.syst_vars.k_int), dim=0)).type(torch.complex128)

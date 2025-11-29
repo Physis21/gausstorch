@@ -3,6 +3,8 @@ import numpy as np
 
 from gausstorch.utils.bcolors import bcolors
 
+torch.set_default_dtype(torch.float64)
+
 
 def torch_block(A, B, C, D):
     """
@@ -174,7 +176,7 @@ def keep_quads_in_sigma_r(sigma_r, quad_key_1, quad_key_2):
 
 # region Folded Wigner function
 
-def wigner(d, alpha, sigma):
+def wigner(d: torch.complex128, alpha: torch.complex128, sigma: torch.complex128) -> torch.complex128:
     """
     Use quadrature 1st and 2nd moments, not creation and annihilation operators
     :param d: 2M * 1 tensor
@@ -187,10 +189,11 @@ def wigner(d, alpha, sigma):
             ((2 * torch.pi) ** M) * torch.sqrt(torch.linalg.det(sigma)))
 
 
-def wigner_2d_map(alpha, sigma, xvec: torch.linspace(-5, 5, 50), yvec: torch.linspace(-5, 5, 50)):
+def wigner_2d_map(alpha: torch.complex128, sigma: torch.complex128, xvec: torch.linspace(-5, 5, 50),
+                  yvec: torch.linspace(-5, 5, 50)):
     assert alpha.shape == torch.Size([2, 1]) and sigma.shape == torch.Size([2, 2])
     assert len(xvec.shape) == 1 and len(yvec.shape) == 1
-    W = torch.empty((xvec.shape[0], yvec.shape[0]))
+    W = torch.empty((xvec.shape[0], yvec.shape[0]), dtype=torch.float64)
     for i_x, x in enumerate(xvec):
         for i_y, y in enumerate(yvec):
             d = torch.tensor([[x], [y]])

@@ -72,8 +72,9 @@ def plot_wigner(ax: plt.axes, alpha, sigma, quad1_key: str, quad2_key: str):
         xvec = torch.linspace(-3, 3, 100)
         yvec = torch.linspace(-3, 3, 100)
         W = wigner_2d_map(alpha_r_x1_x2, sigma_r_x1_x2, xvec, yvec)
+        assert W.dtype == torch.float64
         # plot
-        c = ax.pcolormesh(xvec, yvec, W)
+        c = ax.pcolormesh(xvec.detach().numpy(), yvec.numpy(), W)
         ax.set_xlabel(quad1_key, fontsize=FS)
         ax.set_ylabel(quad2_key, fontsize=FS)
         ax.set_aspect('equal')

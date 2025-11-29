@@ -6,26 +6,26 @@
 - First download the GitLab code
 - From the command line, move into the root folder of the downloaded code
 
-```console
+```bash
 cd root_folder
 ```
 
 - create a virtual environment from Pycharm or using the command (!!! use the correct Python 3.12.1 version)
 
-```console
+```bash
 python -m venv .venv
 ```
 
 - Activate the virtual environment
 
-```console
+```bash
 source .\venv/bin/activate # on Unix/macOS
 .\.venv\Scripts\activate  # on Windows
 ```
 
 - from the virtual environment run the command:
 
-```console
+```bash
 pip install -r requirements.txt  # install pip packages used in src/
 pip install --editable .  # install the src package
 ```
@@ -51,6 +51,17 @@ All of the calculations performed in **Qsyst** are detailed in my thesis. I put 
   - `./src/gausstorch/utils/operations.py` contains functions frequently applied to PyTorch tensors.
     - Example: cholesky inverse for fast inversion of symmetric matrices
   - `./src/gausstorch/utils/param_processing.py` contains functions used to process **Qsyst** parameters.
+
+## Testing
+
+If you installed the requirements, the `pytest` package should be installed in your virtual environment. It will be used to test the source code.
+
+The test module for each module `sample_module.py` is named `test_sample_module.py`, and is located in the same parent directory. It contains multiple functions which each test a function in `sample_module.py`.
+
+For instance, you can check that the `torch_block()` function creates desired blocks and that `wigner()` returns a properly scaled wigner function, by running the command (from the project root directory):
+```bash
+pytest .\src\gausstorch\utils\test_operations.py
+```
 
 ## Contact
 
