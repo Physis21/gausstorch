@@ -6,3 +6,4 @@
 /src/gausstorch/utils/__pycache__/
 /.pytest_cache/
 /.vscode
+/src/docs/_build

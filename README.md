@@ -3,17 +3,17 @@
 ## About this repository
 
 - This repository is an overhauled (properly documented and with better coding practices) version of my PhD code, used to **simulate the dynamics of coupled bosonic modes in PyTorch**
-- My PhD thesis is available on HAL [here](https://theses.hal.science/tel-05383369)
+- My PhD thesis is available on HAL. [Here is the link](https://theses.hal.science/tel-05383369)
 - An instance of the `Qsyst` class in `src/gausstorch/libs/qsyst.py` contains the drive, detuning and coupling parameters between a certain number $M$ of coupled Gaussian modes
   - It will be used to model the dynamics of such a system using the `alpha_sigma_evolution()` methods, and compute the Fock state occupation probabilities (with Gaussian boson sampling) using the `prob_gbs()` method
 - During my PhD I used this formalism to train the physical parameters in order to solve _classical_ machine learning tasks
   - Due to time constraints, I have not added the modules allowing for solving of classical machine learning tasks, but rather only the PyTorch package allowing to train the physical parameters
-  - If you wish to see how I built learning models on top of the `Qsyst` class, you can download the Zenodo repository for my article _"Training the parametric interactions in an analog bosonic quantum neural network with Fock basis measurement"_ [here](https://zenodo.org/records/15856611)
+  - If you wish to see how I built learning models on top of the `Qsyst` class, you can download the Zenodo repository for my article [_"Training the parametric interactions in an analog bosonic quantum neural network with Fock basis measurement"_](https://zenodo.org/records/15856611)
 - This is an overhauled version with only the minimum sufficient classes and functions, **meant for future PhD students to build up on**
 
 ## Requirements & installing
 
-- Have Python **version 3.12.1** installed on your computer. [Here](https://www.python.org/downloads/release/python-3121/) is a link.
+- Have Python **version 3.12.1** installed on your computer. [Download Link](https://www.python.org/downloads/release/python-3121/) is a link.
 - First clone the Github code into a local directory
 - From the command line, move into the root folder of the created directory
 
@@ -47,7 +47,7 @@ pip install --editable .  # install the src package
 
 Go to [tutorials/qsyst.ipynb](tutorials/qsyst.ipynb) to see how the `Qsyst` class is used to model coupled bosonic modes.
 
-All of the calculations performed in `Qsyst` are detailed in my thesis. I put the relevant sections in the Git repository, [here](<thesis section5-3 + Hamiltonian + Langevin.pdf>).
+All of the calculations performed in `Qsyst` are detailed in my thesis. I put the relevant sections in the Git repository. [Here is a direct link](<thesis section5-3 + Hamiltonian + Langevin.pdf>).
 
 ## Structure of src/gausstorch
 

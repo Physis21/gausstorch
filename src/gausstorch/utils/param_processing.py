@@ -40,9 +40,12 @@ def unscale_law(
     rescaled_val: torch.Tensor, par_key: str, R: torch.Tensor
 ) -> torch.Tensor:
     """Performs the inverse operation to :py:func:`rescale_law`
+
     Args:
         rescaled_val (torch.Tensor): rescaled value of parameter to unscale
+
         par_key (str): name of the parameter whose value to substitute
+        
         R (torch.Tensor): rescaling factor
 
     Raises:
