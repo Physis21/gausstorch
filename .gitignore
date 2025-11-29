@@ -5,3 +5,4 @@
 /src/gausstorch/libs/__pycache__/
 /src/gausstorch/utils/__pycache__/
 /.pytest_cache/
+/.vscode

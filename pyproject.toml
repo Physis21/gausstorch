@@ -4,7 +4,7 @@ version = "1.0"
 authors = [
     { name = "Julien Dudas", email = "juliendudas@gmail.com" }
 ]
-description = "Package allowing the simulation of coupled bosonic modes, with PyTorch"
+description = "Package allowing the simulation of coupled bosonic gaussian modes, with PyTorch"
 readme = "README.md"
 requires-python = ">=3.12"
 classifiers = [
