@@ -13,7 +13,7 @@
 
 ## Requirements & installing
 
-- Have Python **version 3.12.1** installed on your computer. [Download Link](https://www.python.org/downloads/release/python-3121/) is a link.
+- Have Python **version 3.12.1** installed on your computer. [Download Link](https://www.python.org/downloads/release/python-3121/).
 - First clone the Github code into a local directory
 - From the command line, move into the root folder of the created directory
 
