@@ -1,5 +1,7 @@
 # Source repository for 'gausstorch', a package allowing the simulation of coupled bosonic modes in the Gaussian regime, with PyTorch
 
+- The package documentation is published in [this link](https://gausstorch.readthedocs.io/en/latest/index.html)
+
 ## About this repository
 
 - This repository is an overhauled (properly documented and with better coding practices) version of my PhD code, used to **simulate the dynamics of coupled bosonic modes in PyTorch**
@@ -10,6 +12,7 @@
   - Due to time constraints, I have not added the modules allowing for solving of classical machine learning tasks, but rather only the PyTorch package allowing to train the physical parameters
   - If you wish to see how I built learning models on top of the `Qsyst` class, you can download the Zenodo repository for my article [_"Training the parametric interactions in an analog bosonic quantum neural network with Fock basis measurement"_](https://zenodo.org/records/15856611)
 - This is an overhauled version with only the minimum sufficient classes and functions, **meant for future PhD students to build up on**
+- The documentation has been automatically generated with [sphinx](https://www.sphinx-doc.org/en/master), and is published on [ReadTheDocs](https://docs.readthedocs.com/platform/stable/index.html).
 
 ## Requirements & installing
 
