@@ -1,3 +1,6 @@
+"""
+Useful constants to have for storing computation data, and keeping track of which :py:attr:`gausstorch.libs.qsyst.Qsyst.syst_vars` `torch.nn.ParameterDict` keys are valid.
+"""
 import os
 
 DOCS_PATH = os.path.join(os.environ["USERPROFILE"], "Documents").replace('\\', '/')

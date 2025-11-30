@@ -1,3 +1,8 @@
+"""
+Functions providing templates for human-readable display of data.
+By default, the axis dimensions are written with my PhD thesis text width and font size in mind.
+"""
+
 import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib.ticker import FormatStrFormatter
@@ -52,7 +57,7 @@ def setup_tex(usetex: bool = True) -> None:
 
 # region Folded print info on model
 def print_state_dict(state_dict: dict) -> None:
-    """Pretty prints a torch.nn.Module state dict, which is just a regular dictionnary.
+    """Pretty prints a `torch.nn.Module` state dict, which is just a regular dictionnary.
 
     Args:
         state_dict (dict): State dict of a torch.nn.Module
@@ -63,10 +68,10 @@ def print_state_dict(state_dict: dict) -> None:
 
 
 def print_other_pars(other_pars: dict) -> None:
-    """Pretty prints the `other_pars` attribute of the `Qsyst` class
+    """Pretty prints the `other_pars` instance attribute of the :py:class:`gausstorch.libs.qsyst.Qsyst` class
 
     Args:
-        other_pars (dict): `other_pars` attribute of the `Qsyst` class 
+        other_pars (dict): `other_pars` attribute of the :py:class:`gausstorch.libs.qsyst.Qsyst` class
     """
     print("other pars:")
     for key, values in other_pars.items():
@@ -91,9 +96,14 @@ def print_model_parameters(named_parameters: dict) -> None:
 # region Plotting Wigner
 
 
-def plot_wigner(ax: plt.axes, alpha: torch.Tensor, sigma: torch.Tensor,
-                 quad1_key: str, quad2_key: str) -> matplotlib.collections.QuadMesh:
-    """Plots the 2D cross section of the wigner quasi-probabiliy distribution of a (`alpha`, `sigma`) state, for quadratures `quad1_key` and `quad2_key`. 
+def plot_wigner(
+    ax: plt.axes,
+    alpha: torch.Tensor,
+    sigma: torch.Tensor,
+    quad1_key: str,
+    quad2_key: str,
+) -> matplotlib.collections.QuadMesh:
+    """Plots the 2D cross section of the wigner quasi-probabiliy distribution of a (`alpha`, `sigma`) state, for quadratures `quad1_key` and `quad2_key`.
 
     Args:
         ax (plt.axes): Ax to plot the QuadMesh into
@@ -103,7 +113,7 @@ def plot_wigner(ax: plt.axes, alpha: torch.Tensor, sigma: torch.Tensor,
         quad2_key (str): Second quadrature chosen for the cross-section
 
     Returns:
-        matplotlib.collections.QuadMesh: 
+        matplotlib.collections.QuadMesh:
     """
     with torch.no_grad():
         M = alpha.shape[0] // 2
@@ -115,7 +125,9 @@ def plot_wigner(ax: plt.axes, alpha: torch.Tensor, sigma: torch.Tensor,
         W = wigner_2d_map(alpha_r_x1_x2, sigma_r_x1_x2, xvec, yvec)
         assert W.dtype == torch.float64
         # plot
-        c = ax.pcolormesh(xvec.detach().numpy(), yvec.detach().numpy(), W.detach().numpy())
+        c = ax.pcolormesh(
+            xvec.detach().numpy(), yvec.detach().numpy(), W.detach().numpy()
+        )
         ax.set_xlabel(quad1_key, fontsize=FS)
         ax.set_ylabel(quad2_key, fontsize=FS)
         ax.set_aspect("equal")

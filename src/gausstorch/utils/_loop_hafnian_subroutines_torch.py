@@ -1,6 +1,6 @@
-## Taken from the github https://github.com/jakeffbulmer/gbs , from Jacob F.F.Bulmer for the paper
-## "The boundary for quantum advantage in Gaussian boson sampling"
-
+"""
+Taken from the github repository `jakeffbulmer/gbs <https://github.com/jakeffbulmer/gbs>`_, from Jacob F.F.Bulmer for the paper `"The boundary for quantum advantage in Gaussian boson sampling" <https://www.science.org/doi/10.1126/sciadv.abl9236>`_.
+"""
 
 import torch
 
@@ -21,8 +21,8 @@ def nb_binom(n, k):
         return 1
     binom = 1
     for i in range(min(k, n - k)):
-        binom *= (n - i)
-        binom //= (i + 1)
+        binom *= n - i
+        binom //= i + 1
     return binom
 
 
@@ -71,14 +71,20 @@ def matched_reps(reps):
     n = len(reps)
 
     if sum(reps) == 0:
-        return torch.tensor([], dtype=torch.int64), torch.tensor([], dtype=torch.int64), None
+        return (
+            torch.tensor([], dtype=torch.int64),
+            torch.tensor([], dtype=torch.int64),
+            None,
+        )
 
     # need to pair off the indices with high numbers of repetitions...
     x = range(n)  # the starting set of indices
     edgesA = []  # contains part A of each pair
     edgesB = []  # part B of each pair
     edgereps = []  # number of repetitions of a pair
-    reps, x = zip(*sorted(zip(reps, x), reverse=True))  # sort according to reps, in descending order
+    reps, x = zip(
+        *sorted(zip(reps, x), reverse=True)
+    )  # sort according to reps, in descending order
     reps = list(reps)
     x = list(x)
 
@@ -181,7 +187,10 @@ def f(E, n):
         for j in range(1, n // (2 * i) + 1):
             powfactor *= factor / j
             for k in range(i * j + 1, n // 2 + 2):
-                comb[count, k - 1] = comb.clone()[count, k - 1] + comb.clone()[1 - count, k - i * j - 1] * powfactor
+                comb[count, k - 1] = (
+                    comb.clone()[count, k - 1]
+                    + comb.clone()[1 - count, k - i * j - 1] * powfactor
+                )
     return comb[count, :]
 
 
@@ -215,7 +224,10 @@ def f_loop(E, AX_S, XD_S, D_S, n):
         for j in range(1, n // (2 * i) + 1):
             powfactor = powfactor.clone() * factor / j
             for k in range(i * j + 1, n // 2 + 2):
-                comb[count, k - 1] = comb.clone()[count, k - 1] + comb.clone()[1 - count, k - i * j - 1] * powfactor
+                comb[count, k - 1] = (
+                    comb.clone()[count, k - 1]
+                    + comb.clone()[1 - count, k - i * j - 1] * powfactor
+                )
     return comb[count, :]
 
 
@@ -256,7 +268,10 @@ def f_loop_odd(E, AX_S, XD_S, D_S, n, oddloop, oddVX_S):
         for j in range(1, n // i + 1):
             powfactor *= factor / j
             for k in range(i * j + 1, n + 2):
-                comb[count, k - 1] = comb.clone()[count, k - 1] + comb.clone()[1 - count, k - i * j - 1] * powfactor
+                comb[count, k - 1] = (
+                    comb.clone()[count, k - 1]
+                    + comb.clone()[1 - count, k - i * j - 1] * powfactor
+                )
 
     return comb[count, :]
 
@@ -281,8 +296,12 @@ def get_AX_S(kept_edges, A):
     A_nonzero = nb_ix(A, nonzero_rows, nonzero_rows)
 
     AX_nonzero = torch.empty_like(A_nonzero, dtype=torch.complex128)
-    AX_nonzero[:, :n_nonzero_edges] = kept_edges_nonzero * A_nonzero[:, n_nonzero_edges:]
-    AX_nonzero[:, n_nonzero_edges:] = kept_edges_nonzero * A_nonzero[:, :n_nonzero_edges]
+    AX_nonzero[:, :n_nonzero_edges] = (
+        kept_edges_nonzero * A_nonzero[:, n_nonzero_edges:]
+    )
+    AX_nonzero[:, n_nonzero_edges:] = (
+        kept_edges_nonzero * A_nonzero[:, :n_nonzero_edges]
+    )
 
     return AX_nonzero
 
@@ -312,8 +331,12 @@ def get_submatrices(kept_edges, A, D, oddV):
     A_nonzero = nb_ix(A, nonzero_rows, nonzero_rows)
 
     AX_nonzero = torch.empty_like(A_nonzero, dtype=torch.complex128)
-    AX_nonzero[:, :n_nonzero_edges] = kept_edges_nonzero * A_nonzero[:, n_nonzero_edges:]
-    AX_nonzero[:, n_nonzero_edges:] = kept_edges_nonzero * A_nonzero[:, :n_nonzero_edges]
+    AX_nonzero[:, :n_nonzero_edges] = (
+        kept_edges_nonzero * A_nonzero[:, n_nonzero_edges:]
+    )
+    AX_nonzero[:, n_nonzero_edges:] = (
+        kept_edges_nonzero * A_nonzero[:, :n_nonzero_edges]
+    )
 
     D_nonzero = D[nonzero_rows]
 
@@ -324,8 +347,12 @@ def get_submatrices(kept_edges, A, D, oddV):
     if oddV is not None:
         oddV_nonzero = oddV[nonzero_rows]
         oddVX_nonzero = torch.empty_like(oddV_nonzero, dtype=torch.complex128)
-        oddVX_nonzero[:n_nonzero_edges] = kept_edges_nonzero * oddV_nonzero[n_nonzero_edges:]
-        oddVX_nonzero[n_nonzero_edges:] = kept_edges_nonzero * oddV_nonzero[:n_nonzero_edges]
+        oddVX_nonzero[:n_nonzero_edges] = (
+            kept_edges_nonzero * oddV_nonzero[n_nonzero_edges:]
+        )
+        oddVX_nonzero[n_nonzero_edges:] = (
+            kept_edges_nonzero * oddV_nonzero[:n_nonzero_edges]
+        )
     else:
         oddVX_nonzero = None
 
@@ -351,8 +378,12 @@ def get_submatrix_batch_odd0(kept_edges, oddV0):
     kept_edges_nonzero = kept_edges[kept_edges != 0]
     oddV_nonzero0 = oddV0[nonzero_rows]
     oddVX_nonzero0 = torch.empty_like(oddV_nonzero0, dtype=torch.complex128)
-    oddVX_nonzero0[:n_nonzero_edges] = kept_edges_nonzero * oddV_nonzero0[n_nonzero_edges:]
-    oddVX_nonzero0[n_nonzero_edges:] = kept_edges_nonzero * oddV_nonzero0[:n_nonzero_edges]
+    oddVX_nonzero0[:n_nonzero_edges] = (
+        kept_edges_nonzero * oddV_nonzero0[n_nonzero_edges:]
+    )
+    oddVX_nonzero0[n_nonzero_edges:] = (
+        kept_edges_nonzero * oddV_nonzero0[:n_nonzero_edges]
+    )
 
     return oddVX_nonzero0
 

@@ -1,7 +1,7 @@
 """
-Module constaining `Qsyst` class. An instance contains the drive, detuning, coupling and dissipation parameters of a M mode system.
+Module constaining the :py:class:`Qsyst` class. An instance contains the drive, detuning, coupling and dissipation parameters of a M mode system.
 
-The `Qsyst` methods will then be used to compute the displacement and covariance matrices of the system after time evolutions under input encoding.
+The :py:class:`Qsyst`  methods will then be used to compute the displacement and covariance matrices of the system after time evolutions under input encoding.
 """
 
 import torch
@@ -30,14 +30,14 @@ from gausstorch.constants import SYST_VARS_KEYS_WITH_BIASES
 torch.set_default_dtype(torch.float64)
 
 
-def init_pars_default(M):
+def init_pars_default(M: int) -> dict:
     """
 
     Args:
-        M: Number of modes.
+        M (int): Number of modes.
 
     Returns:
-        output: Default parameter values for M modes.
+        dict : Default parameter values for M modes.
 
     """
     g_shape = M * (M - 1) // 2
@@ -67,21 +67,37 @@ def init_pars_default(M):
 
 
 class Qsyst(nn.Module):
+    """Class allowing for the simulation of coupled gaussian modes.
+    
+    """
+
     def __init__(
         self, init_pars: dict, learnable_vars: list = [], init_print: bool = False
     ):
         """
 
         Args:
-            init_pars: Dict containing drive, detuning, coupling, dissipation parameters, and time interval. See the init_pars_default() function for a template.
-            learnable_vars: List containing the parameters to learn (with autograd enabled). By default, no parameter has gradient computation enabled.
-            init_print: Bool checking whether to print a message during instance creation or not.
+            init_pars (dict): Dict containing drive, detuning, coupling, dissipation parameters, and time interval. See the :py:func:`init_pars_default` function for a template.
+            learnable_vars (list, optional): List containing the parameters to learn (with autograd enabled). By default, no parameter has gradient computation enabled.
+            init_print (bool, optional): Bool checking whether to print a message during instance creation or not. Defaults to False.
+        
+            
+        Attributes:
+            init_pars (dict): Deep copy of `init_pars`.
+            learnable_vars (dict): Deep copy of `learnable_vars`.
+            sys_vars (torch.nn.ParameterDict): Possibly trainable parameters of the system.
+            other_pars (dict): Parameters which are never trainable.
+            M (int): Number of modes.
+            g_shape (int): Number of coupling combinations.
+            alpha0 (torch.Tensor): Displacement vector of the vacuum.
+            sigma0 (torch.Tensor): Covariance matrix of the vacuum
+        
         """
         super().__init__()
-        self.init_pars = init_pars
-        self.learnable_vars = learnable_vars
+        self.init_pars = deepcopy(init_pars)
+        self.learnable_vars = deepcopy(learnable_vars)
         if init_print:
-            print(f"{bcolors.BOLD}initializing Qsyst model{bcolors.ENDC}")
+            print(f"{bcolors.BOLD}Initializing Qsyst model{bcolors.ENDC}")
         # System parameters are store in the OrderedDict syst_vars
         # Hyper-parameters like the evolution time t_i are stored in other_pars.
         # deepcopy init_par to prevent memory issues due to dictionaries.
@@ -101,11 +117,11 @@ class Qsyst(nn.Module):
         self.alpha0 = torch.zeros((2 * self.M, 1), dtype=torch.complex128)
         self.sigma0 = (1 / 2) * torch.eye(2 * self.M, dtype=torch.complex128)
 
-    def make_syst_vars(self):
+    def make_syst_vars(self) -> torch.nn.ParameterDict:
         """
 
         Returns:
-            syst_vars: nn.ParameterDict with the parameters to learn.
+            nn.ParameterDict: Parameters to learn in key-value pairs.
 
         """
         syst_vars = nn.ParameterDict(
@@ -116,11 +132,14 @@ class Qsyst(nn.Module):
         )
         return syst_vars
 
-    def make_other_pars(self):
+    def make_other_pars(self) -> dict:
         """
 
         Returns:
-            other_pars: dict with parameters which can never be learned
+            dict : Dict containing parameters which can never be learned.
+
+        Note:
+            Only includes the time interval `t_i` at the moment.
 
         """
         other_pars = {key: self.init_pars[key] for key in ["t_i"]}
@@ -412,7 +431,7 @@ class Qsyst(nn.Module):
     def prob_gbs(
         self, alpha: torch.Tensor, sigma: torch.Tensor, n: list, n_shots: int = None
     ) -> torch.Tensor:
-        """This function uses the global GBS formula to calculate P(n) from the 1st and 2nd moments.
+        """This function uses the global GBS formula to calculate a Fock state occupation probability from the field operator displacement vector `alpha` and covariance matrix `sigma`.
 
         Args:
             alpha (torch.Tensor): Field operator displacement vector
@@ -457,17 +476,15 @@ class Qsyst(nn.Module):
         n: list,
         modes_kept: list,
         n_shots: int = None,
-    ):
+    ) -> torch.Tensor:
         """This function uses the GBS formula to calculate P(n) from the 1st and 2nd moments.
         All the modes except the ones contained in modes_kept are traced.
         n is the list containing the photon combination to measure, after the partial trace.
 
         Example:
-            `M = 3`
-            `osc_i = (0, 2)`
-            `n = (2, 4)`
-        This means you trace out mode 1, and compute the probability of
-        measuring 2 photons in mode 0, and 4 photons in mode 2.
+            If `M = 3`, `modes_kept = [0, 2]`, `n = [2, 4]`,
+
+            This means you trace out mode 1, and compute the probability of measuring 2 photons in mode 0, and 4 photons in mode 2.
 
         Args:
             alpha (torch.Tensor): Field operator displacement vector.
@@ -477,7 +494,7 @@ class Qsyst(nn.Module):
             n_shots (int, optional): Number of measurement shots. Defaults to None, in which case perfectly accurate estimations are considered.
 
         Returns:
-            _type_: _description_
+            torch.Tensor: Fock state occupation probability
         """
 
         sigma_new = truncate_sigma(sigma, modes_kept)
@@ -538,7 +555,7 @@ class Qsyst(nn.Module):
             return_tspan (bool, optional): If `True`, also return discrete time values. Defaults to False.
 
         Returns:
-            _type_: Either None, or photon number values with discrete time values
+            Either None, or photon number values with discrete time values
 
         """
         torch.set_num_threads(1)
@@ -634,7 +651,7 @@ class Qsyst(nn.Module):
             return_vals (bool, optional): If `True`, return Fock states values. Defaults to False.
 
         Returns:
-            _type_: Either None, or torch.Tensor containing Fock state values
+            Either None, or torch.Tensor containing Fock state
         """
         torch.set_num_threads(1)
 

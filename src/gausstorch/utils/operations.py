@@ -1,3 +1,7 @@
+"""
+This module contains useful functions which operate on the `torch.Tensor` objects manipulated in the `gausstorch` package.
+"""
+
 import torch
 import numpy as np
 
@@ -18,8 +22,7 @@ def torch_block(
         D (torch.Tensor): Square tensor
 
     Returns:
-        torch.Tensor: Block tensor [[A, B],
-    [C, D]]
+        torch.Tensor: Block tensor [[A, B], [C, D]]
     """
 
     x, y = torch.cat((A, B, C, D), dim=1).t().chunk(2)
@@ -302,10 +305,10 @@ def wigner(d: torch.Tensor, alpha: torch.Tensor, sigma: torch.Tensor) -> torch.t
 def wigner_2d_map(
     alpha: torch.Tensor,
     sigma: torch.Tensor,
-    xvec: torch.Tensor = torch.linspace(-5, 5, 50),
-    yvec: torch.Tensor = torch.linspace(-5, 5, 50),
+    xvec: torch.Tensor = None,
+    yvec: torch.Tensor = None,
 ) -> torch.Tensor:
-    """Creates a 2D tensor containing the wigner function values of the (alpha, sigma) gaussian state
+    """Creates a 2D tensor containing the wigner function values of the (`alpha, sigma`) gaussian state
 
     Args:
         alpha (torch.Tensor): Quadrature displacement vector
@@ -316,6 +319,10 @@ def wigner_2d_map(
     Returns:
         torch.Tensor: 2D map of the wigner function evaluations, for the different quadrature values in the phase space
     """
+    if xvec is None:
+        xvec = torch.linspace(-5, 5, 50)
+    if yvec is None:
+        yvec = torch.linspace(-5, 5, 50)
     assert alpha.shape == torch.Size([2, 1]) and sigma.shape == torch.Size([2, 2])
     assert len(xvec.shape) == 1 and len(yvec.shape) == 1
     W = torch.empty((xvec.shape[0], yvec.shape[0]), dtype=torch.float64)

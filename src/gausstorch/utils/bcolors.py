@@ -1,6 +1,6 @@
 class bcolors:
     """Class containing colors for command line prints, using ANSI escape sequences.
-    Source code taken from [stackoverflow](https://stackoverflow.com/questions/287871/how-do-i-print-colored-text-to-the-terminal)
+    Source code taken from `stackoverflow <https://stackoverflow.com/questions/287871/how-do-i-print-colored-text-to-the-terminal>`_.
     """
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'

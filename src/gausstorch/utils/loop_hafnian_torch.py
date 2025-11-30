@@ -1,6 +1,6 @@
-## Taken from the github https://github.com/jakeffbulmer/gbs , from Jacob F.F.Bulmer for the paper
-## "The boundary for quantum advantage in Gaussian boson sampling"
-
+"""
+Taken from the github repository `jakeffbulmer/gbs <https://github.com/jakeffbulmer/gbs>`_, from Jacob F.F.Bulmer for the paper `"The boundary for quantum advantage in Gaussian boson sampling" <https://www.science.org/doi/10.1126/sciadv.abl9236>`_.
+"""
 
 import torch
 import numpy as np
