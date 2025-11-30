@@ -143,11 +143,24 @@ def plot_wigner(
 def plot_evolution_N(
     tspan: np.ndarray,
     means: np.ndarray,
-    width_ratio=0.48,
-    xlabel="time (ns)",
-    ylabel=r"$\boldsymbol{N}$",
-    yscale="linear",
-):
+    width_ratio: float = 0.48,
+    xlabel: str = "time (ns)",
+    ylabel: str = r"$\boldsymbol{N}$",
+    yscale: str = "linear",
+) -> tuple:
+    """Template which returns the fig and ax of a mean photon number evolution.
+
+    Args:
+        tspan (np.ndarray): Discrete time values.
+        means (np.ndarray): Mean photon number values.
+        width_ratio (float, optional): Ratio of width ratio to :py:data`TEXTWIDTH_INCH`. Defaults to 0.48.
+        xlabel (str, optional): Label of the X axis. Defaults to "time (ns)".
+        ylabel (str, optional): Label of the Y axis. Defaults to r"$\boldsymbol{N}$".
+        yscale (str, optional): Y axis scale. Defaults to "linear".
+
+    Returns:
+        tuple: Fig and ax of the plot
+    """
     setup_tex()
     M = means.shape[1]
     width = width_ratio * TEXTWIDTH_INCH
@@ -176,11 +189,25 @@ def plot_evolution_fock(
     tspan: np.ndarray,
     probs: np.ndarray,
     labels: list,
-    width_ratio=0.48,
-    xlabel="time (ns)",
-    ylabel=r"Probability",
-    yscale="linear",
-):
+    width_ratio: float = 0.48,
+    xlabel: str = "time (ns)",
+    ylabel: str = r"Probability",
+    yscale: str = "linear",
+) -> tuple:
+    """Template which returns the fig and ax of a set of fock state probability evolutions.
+
+    Args:
+        tspan (np.ndarray): Discrete time values.
+        probs (np.ndarray): Fock state occupation probabilities.
+        labels (list): Label of each fock state occupation probability.
+        width_ratio (float, optional): Ratio of width to :py:data`TEXTWIDTH_INCH`. Defaults to 0.48.
+        xlabel (str, optional): Label of the X axis. Defaults to "time (ns)".
+        ylabel (str, optional): Label of the Y axis. Defaults to r"Probability".
+        yscale (str, optional): Y axis scale. Defaults to "linear".
+
+    Returns:
+        tuple: Fig and ax of the plot
+    """
     setup_tex()
     M = probs.shape[1]
     width = width_ratio * TEXTWIDTH_INCH
@@ -208,7 +235,17 @@ def plot_evolution_fock(
 # region Fock combination manipulation
 
 
-def fock_state_to_str_general(fock_combination, mode_comb):
+def fock_state_to_str_general(fock_combination: list, mode_comb: list) -> str:
+    """Generates string describing a Fock state occupation probability
+
+    Args:
+        fock_combination (list): Combination of photon numbers in each mode
+        mode_comb (list): Combination of mode indexes
+
+    Returns:
+        str: Fock state occupation probability notation
+    """
+
     prob_notation = [
         f"{str(fock_num)}_{str(osc)}"
         for fock_num, osc in zip(fock_combination, mode_comb)
@@ -216,7 +253,15 @@ def fock_state_to_str_general(fock_combination, mode_comb):
     return "$P(" + "".join(prob_notation) + ")$"
 
 
-def fock_states_to_str_list(fock_combs_per_mode_comb):
+def fock_states_to_str_list(fock_combs_per_mode_comb: dict) -> list:
+    """Returns a list of Fock state probability occupations, as defined in :py:func:`fock_state_to_str_general`.
+
+    Args:
+        fock_combs_per_mode_comb (dict): Keys are combinations of modes, and values are lists of photon number combinations, as tuples.
+
+    Returns:
+        list: Fock state occupation probability notations
+    """
     fock_str_list = []
     for mode_comb, fock_combinations in fock_combs_per_mode_comb.items():
         for fock_combination in fock_combinations:
