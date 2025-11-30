@@ -3,10 +3,10 @@ Useful constants to have for storing computation data, and keeping track of whic
 """
 import os
 
-DOCS_PATH = os.path.join(os.environ["USERPROFILE"], "Documents").replace('\\', '/')
+# DOCS_PATH = os.path.join(os.environ["USERPROFILE"], "Documents").replace('\\', '/')
 
 CODE_VERSION = '1.0'
-SIM_DATA_DIR_PATH = DOCS_PATH + f'/Simulations_GaussTorch_v{CODE_VERSION}'
+# SIM_DATA_DIR_PATH = DOCS_PATH + f'/Simulations_GaussTorch_v{CODE_VERSION}'
 
 SYST_VARS_KEYS_WITHOUT_BIASES = [
     'detuning',
