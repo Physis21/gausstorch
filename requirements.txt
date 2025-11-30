@@ -3,3 +3,4 @@ numpy==2.3.5
 torch==2.8.0
 sphinx-rtd-theme==3.0.2
 myst-parser==4.0.1
+-e .
