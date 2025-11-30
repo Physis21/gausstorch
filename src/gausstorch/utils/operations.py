@@ -305,26 +305,26 @@ def wigner(d: torch.Tensor, alpha: torch.Tensor, sigma: torch.Tensor) -> torch.t
 def wigner_2d_map(
     alpha: torch.Tensor,
     sigma: torch.Tensor,
-    xvec: torch.Tensor = None,
-    yvec: torch.Tensor = None,
+    xvec : torch.Tensor = None,
+    yvec : torch.Tensor = None,
 ) -> torch.Tensor:
-    """Creates a 2D tensor containing the wigner function values of the (`alpha, sigma`) gaussian state
+    """Returns the Wigner quasi-probability distribution
 
     Args:
         alpha (torch.Tensor): Quadrature displacement vector
-        sigma (torch.Tensor): Quadrature covariance matrix
-        xvec (torch.Tensor, optional): Range of values for the first chosen quadrature. Defaults to torch.linspace(-5, 5, 50).
-        yvec (torch.Tensor, optional): Range of values for the second chosen quadrature. Defaults to torch.linspace(-5, 5, 50).
+        sigma (torch.Tensor): Covariance displacement vector
+        xvec (torch.Tensor, optional): 1st quadrature values. Defaults to None.
+        yvec (torch.Tensor, optional): 2nd quadrature values. Defaults to None.
 
     Returns:
-        torch.Tensor: 2D map of the wigner function evaluations, for the different quadrature values in the phase space
+        torch.Tensor: 2D Tensor with wigner function values
     """
     if xvec is None:
         xvec = torch.linspace(-5, 5, 50)
     if yvec is None:
         yvec = torch.linspace(-5, 5, 50)
-    assert alpha.shape == torch.Size([2, 1]) and sigma.shape == torch.Size([2, 2])
-    assert len(xvec.shape) == 1 and len(yvec.shape) == 1
+    # assert alpha.shape == torch.Size([2, 1]) and sigma.shape == torch.Size([2, 2])
+    # assert len(xvec.shape) == 1 and len(yvec.shape) == 1
     W = torch.empty((xvec.shape[0], yvec.shape[0]), dtype=torch.float64)
     for i_x, x in enumerate(xvec):
         for i_y, y in enumerate(yvec):
