@@ -85,7 +85,7 @@ class Qsyst(nn.Module):
         Attributes:
             init_pars (dict): Deep copy of `init_pars`.
             learnable_vars (dict): Deep copy of `learnable_vars`.
-            sys_vars (torch.nn.ParameterDict): Possibly trainable parameters of the system.
+            syst_vars (torch.nn.ParameterDict): Possibly trainable parameters of the system.
             other_pars (dict): Parameters which are never trainable.
             M (int): Number of modes.
             g_shape (int): Number of coupling combinations.

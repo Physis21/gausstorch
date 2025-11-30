@@ -153,9 +153,9 @@ def plot_evolution_N(
     Args:
         tspan (np.ndarray): Discrete time values.
         means (np.ndarray): Mean photon number values.
-        width_ratio (float, optional): Ratio of width ratio to :py:data`TEXTWIDTH_INCH`. Defaults to 0.48.
+        width_ratio (float, optional): Ratio of width ratio to :py:data:`TEXTWIDTH_INCH`. Defaults to 0.48.
         xlabel (str, optional): Label of the X axis. Defaults to "time (ns)".
-        ylabel (str, optional): Label of the Y axis. Defaults to r"$\boldsymbol{N}$".
+        ylabel (str, optional): Label of the Y axis. Defaults to r"$\\boldsymbol{N}$".
         yscale (str, optional): Y axis scale. Defaults to "linear".
 
     Returns:
@@ -200,7 +200,7 @@ def plot_evolution_fock(
         tspan (np.ndarray): Discrete time values.
         probs (np.ndarray): Fock state occupation probabilities.
         labels (list): Label of each fock state occupation probability.
-        width_ratio (float, optional): Ratio of width to :py:data`TEXTWIDTH_INCH`. Defaults to 0.48.
+        width_ratio (float, optional): Ratio of width to :py:data:`TEXTWIDTH_INCH`. Defaults to 0.48.
         xlabel (str, optional): Label of the X axis. Defaults to "time (ns)".
         ylabel (str, optional): Label of the Y axis. Defaults to r"Probability".
         yscale (str, optional): Y axis scale. Defaults to "linear".
