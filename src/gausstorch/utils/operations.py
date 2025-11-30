@@ -33,10 +33,10 @@ def cholesky_inverse_det(M: torch.Tensor) -> tuple:
     """This function is faster and more accurate than torch.det and torch.inverse for symmetric positive definite matrices
 
     Args:
-        M (torch.Tensor): _description_
+        M (torch.Tensor): Symmetric definite tensor to inverse
 
     Raises:
-        torch._C._LinAlgError: _description_
+        torch._C._LinAlgError: Matrix is not symmetrix definite
 
     Returns:
         tuple: Inverse of M, and determinant of M
