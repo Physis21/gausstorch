@@ -2,8 +2,6 @@ import torch
 import torch.nn as nn
 from copy import deepcopy
 
-from gausstorch.constants import SYST_VARS_KEYS_WITH_BIASES
-
 
 def rescale_law(
     unscaled_val: torch.Tensor, par_key: str, R: torch.Tensor
@@ -45,7 +43,7 @@ def unscale_law(
         rescaled_val (torch.Tensor): rescaled value of parameter to unscale
 
         par_key (str): name of the parameter whose value to substitute
-        
+
         R (torch.Tensor): rescaling factor
 
     Raises:

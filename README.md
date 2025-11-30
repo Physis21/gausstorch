@@ -54,8 +54,6 @@ All of the calculations performed in `Qsyst` are detailed in my thesis. I put th
 
 ## Structure of src/gausstorch
 
-- `./src/gausstorch/constants`: constants reused throughout the package.
-  - example: `SIM_DATA_DIR_PATH` defines the path where the user wants simulation data to be saved.
 - `./src/gausstorch/libs/qsyst`: contains the `Qsyst` class. It contains methods to simulate an arbitrary number of coupled bosonic modes.
   - On initialization, an instance of `Qsyst` requires an `init_pars` argument, which specifies the drive, coupling and dissipation parameters within the modes.
   - Learning models using Gaussian dynamics should be child classes of `Qsyst`

@@ -25,9 +25,29 @@ from gausstorch.utils.display import (
 )
 from gausstorch.utils.bcolors import bcolors
 from gausstorch.utils.loop_hafnian_torch import loop_hafnian
-from gausstorch.constants import SYST_VARS_KEYS_WITH_BIASES
 
 torch.set_default_dtype(torch.float64)
+
+SYST_VARS_KEYS_WITHOUT_BIASES = [
+    "detuning",
+    "eA_real",
+    "eA_imag",
+    "g_real",
+    "g_imag",
+    "gs_real",
+    "gs_imag",
+    "k_int",
+    "k_ext",
+]
+SYST_VAR_BIAS_KEYS = [
+    "W_0",
+    "W_bias",
+    "theta_bias_real",
+    "theta_bias_imag",
+    "phi_0",
+    "phi_bias",
+]
+SYST_VARS_KEYS_WITH_BIASES = SYST_VARS_KEYS_WITHOUT_BIASES + SYST_VAR_BIAS_KEYS
 
 
 def init_pars_default(M: int) -> dict:
@@ -67,9 +87,7 @@ def init_pars_default(M: int) -> dict:
 
 
 class Qsyst(nn.Module):
-    """Class allowing for the simulation of coupled gaussian modes.
-    
-    """
+    """Class allowing for the simulation of coupled gaussian modes."""
 
     def __init__(
         self, init_pars: dict, learnable_vars: list = [], init_print: bool = False
@@ -80,8 +98,8 @@ class Qsyst(nn.Module):
             init_pars (dict): Dict containing drive, detuning, coupling, dissipation parameters, and time interval. See the :py:func:`init_pars_default` function for a template.
             learnable_vars (list, optional): List containing the parameters to learn (with autograd enabled). By default, no parameter has gradient computation enabled.
             init_print (bool, optional): Bool checking whether to print a message during instance creation or not. Defaults to False.
-        
-            
+
+
         Attributes:
             init_pars (dict): Deep copy of `init_pars`.
             learnable_vars (dict): Deep copy of `learnable_vars`.
@@ -91,7 +109,7 @@ class Qsyst(nn.Module):
             g_shape (int): Number of coupling combinations.
             alpha0 (torch.Tensor): Displacement vector of the vacuum.
             sigma0 (torch.Tensor): Covariance matrix of the vacuum
-        
+
         """
         super().__init__()
         self.init_pars = deepcopy(init_pars)

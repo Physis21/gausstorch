@@ -13,17 +13,6 @@ Subpackages
    gausstorch.libs
    gausstorch.utils
 
-Submodules
-----------
-
-gausstorch.constants module
----------------------------
-
-.. automodule:: gausstorch.constants
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
 Module contents
 ---------------
 
