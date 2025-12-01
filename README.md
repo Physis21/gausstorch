@@ -33,7 +33,7 @@ python -m venv .venv
 - Activate the virtual environment
 
 ```bash
-source .\venv/bin/activate # on Unix/macOS
+source .venv/bin/activate # on Unix/macOS
 .\.venv\Scripts\activate  # on Windows
 ```
 
@@ -45,6 +45,38 @@ pip install --editable .  # install the src package
 ```
 
 - The 'gausstorch' package is now usable from the package `gausstorch`
+
+- In order to display latex text in matplotlib displays, you also need a texlive distribution. For linux users, a full distribution can be installed with (⚠️ long download time)
+
+```bash
+sudo apt install texlive-full
+```
+
+### Troubleshooting
+
+- If you are running a python virtual environment from WSL2 and run the `matplotlib.pyplot.show()` function, you might get the error:
+
+```error
+UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown plt.show()
+```
+
+- In this case, run the command (taken from [Ndtihah's answer in a stackoverflow question](https://stackoverflow.com/questions/77507580/userwarning-figurecanvasagg-is-non-interactive-and-thus-cannot-be-shown-plt-sh))
+
+```bash
+sudo apt-get install python3-tk
+```
+
+- Check that the display port is indeed `:0` with
+
+```bash
+echo $DISPLAY
+```
+
+- If this is not the case, then change its value with:
+
+```bash
+export DISPLAY=:0
+```
 
 ## READ THE TUTORIAL
 
