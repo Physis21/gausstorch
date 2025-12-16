@@ -1,10 +1,8 @@
 import matplotlib.pyplot as plt
 import torch
-import numpy as np
 
-from gausstorch.utils.operations import moments_to_quad_moments
 from gausstorch.libs.qsyst import Qsyst
-from gausstorch.utils.display import plot_wigner, TEXTWIDTH_INCH, setup_tex
+from gausstorch.utils.display import TEXTWIDTH_INCH, plot_wigner, setup_tex
 
 torch.set_default_dtype(torch.float64)
 
